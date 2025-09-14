@@ -1,13 +1,23 @@
+#1.1
 import pandas as pd
 #put your code here
+#1.2
 df = pd.read_csv('https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv')
-df.head(7)
-df.info()
-df.describe()
 
+#1.3
+print(f'первые 7 строк:\n{df.head(7)}')
+print('техническая сводка о данных:')
+df.info()
+print('статистическая сводка:')
+df.describe()
+#средний возраст:30; максимальная цена: 512
+
+#2.1
 median_age = df['Age'].median()
 df['Age'] = df['Age'].fillna(median_age)
+df.info()
 
+#2.2
 def get_age_group(age):
     if age < 18:
         return "Ребенок"
@@ -17,10 +27,19 @@ def get_age_group(age):
       return "пожилой"
 
 df['AgeGroup'] = df['Age'].apply(get_age_group)
-print(df[['Age','AgeGroup']].head()) 
+print('новый столбец')
+print(df[['Age','AgeGroup']].head())
 
+#3.1
+print('процент выживания мужчин и женщин:')
 print (df.groupby('Sex')['Survived'].mean())
+print ('процент выживания классов:')
 print (df.groupby('Pclass')['Survived'].mean())
+print('процент выживания пола и класса:')
 print (df.pivot_table(values= 'Survived', index= 'Sex', columns= 'Pclass', aggfunc= 'mean')*100)
+
+#3.2
+print('несовершеннолетние из 3-го, выжили:)
 print (df[(df['Age']<18) & (df['Pclass']==3) & (df['Survived']==1)].sort_values('Age', ascending=False)[['Name', 'Age']])
+print('самый пожилой мужчина который не выжил:)
 print (df[(df['Sex'] == 'male') & (df['Survived']==0)].sort_values('Age', ascending=False).head(1)[['Name', 'Age']])
